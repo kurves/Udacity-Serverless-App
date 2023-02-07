@@ -26,21 +26,21 @@ export async function getTodos(userId: string): Promise<TodoItem[]> {
     newTodo: CreateTodoRequest
     ): Promise<TodoItem> {
     const todoId = uuid.v4()
+    const attachmentUrl = attachmentUtils.getAttachmentUrl(todoId)
   
     const newItem: TodoItem = {
       userId,
       todoId,
       createdAt: new Date().toISOString(),
       done: false,
-      attachmentUrl: null,
+      attachmentUrl: attachmentUrl,
       ...newTodo
     }
   
     logger.info(`Creating todo ${todoId} for user ${userId}`, { userId, todoId, todoItem: newItem })
   
-    await todosAccess.createTodoItem(newItem)
-  
-    return newItem
+    return await todosAccess.createTodoItem(newItem)
+
   }
 
   export async function updateTodo(userId: string, todoId: string, updateTodoRequest: UpdateTodoRequest) {
