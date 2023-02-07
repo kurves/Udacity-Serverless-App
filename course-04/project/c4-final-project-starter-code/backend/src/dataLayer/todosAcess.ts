@@ -49,15 +49,20 @@ async createTodo(todoItem: TodoItem): Promise<TodoItem> {
     return todoItem as TodoItem
 }
 
-async updateTodo(userId: string, todoId: string, todoUpdate: TodoUpdate): Promise<TodoUpdate> {
+async updateTodo(
+    userId: string, 
+    todoId: string, 
+    todoUpdate: TodoUpdate): Promise<TodoUpdate> {
+        logger.info('Update todo item')
     var params = {
         TableName: this.todosTable,
         Key: {
             userId: userId,
             todoId: todoId
         },
-        UpdateExpression: "set #n = :r, dueDate=:p, done=:a",
+        UpdateExpression: "set attachmentUrl = :attachmentUrl",
         ExpressionAttributeValues: {
+            
             ":r": todoUpdate.name,
             ":p": todoUpdate.dueDate,
             ":a": todoUpdate.done
@@ -111,7 +116,9 @@ async generateUploadUrl(userId: string, todoId: string): Promise<String> {
     logger.info("Presigned url generated ", url)
 
     return url;
+
 }
+
 
 }
 
@@ -122,6 +129,9 @@ function getUploadUrl(todoId: string, bucketName: string): string {
         Expires: parseInt(urlExpiration)
     })
 }
+
+
+
 
 
 
@@ -136,3 +146,4 @@ function createDynamoDBClient() {
 
     return new XAWS.DynamoDB.DocumentClient()
 }
+

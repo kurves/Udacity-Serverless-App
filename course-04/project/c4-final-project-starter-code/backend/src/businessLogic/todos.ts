@@ -15,10 +15,10 @@ const todosStorage = new TodosStorage()
 const logger = createLogger('TodoAccess')
 const attachmentUtils = new AttachmentUtils()
 
-export async function getTodos(userId: string): Promise<TodoItem[]> {
+export async function getTodosForUser(userId: string): Promise<TodoItem[]> {
     logger.info(`Getting todos for user ${userId}`, { userId })
   
-    return await todosAccess.getTodoItems(userId)
+    return await todosAccess.getAllTodos(userId)
   }
 
   export async function createTodo(

@@ -95,6 +95,7 @@ functions:
         Action:
           - dynamodb:PutItem
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}   
+      - Effect: Allow
         Action:
           - xray: PutTraceSegments
         Resource:
@@ -188,7 +189,7 @@ resources:
           gatewayresponse.header.Access-Control-Allow-Methods: "*"
       ResponseType: DEFAULT_4XX
       RestApiId:
-        Ref: ApiGatewayRestApi
+        Ref: 'ApiGatewayRestApi'
 
   GatewayResponseDefault5XX:
     Type: AWS::ApiGateway::GatewayResponse
@@ -199,7 +200,7 @@ resources:
         gatewayresponse.header.Access-Control-Allow-Methods: "'GET,PUT,OPTIONS,POST,DELETE,PATCH'"
     ResponseType: DEFAULT_5XX
     RestApiId:
-      Ref: ApiGatewayRestApi
+      Ref: 'ApiGatewayRestApi'
 
 
  # TODO: Create a DynamoDB table with local secondary index and a composite key
@@ -214,15 +215,11 @@ resources:
           - AttributeName: todoId
             AttributeType: S
         KeySchema:
-          - AttributeName: userId
+          - AttributeName: todoId
             keyType: HASH
           - AttributeName: createdAt
             keytype: RANGE      
-        KeySchema:
-            - AttibuteName: todoId
-              keyType: HASH
-            Projection:
-              - ProjectionType: ALL     
+            
         BillingMode: PAY_PER_REQUEST
         TableName: ${self:provider.environment.TODOS_TABLE}        
  # GlobalSecondaryIndexes:
