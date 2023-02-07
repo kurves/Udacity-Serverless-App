@@ -1,5 +1,5 @@
 import { TodosAccess } from '../dataLayer/todosAcess'
-import { AttachmentUtils } from './attachmentUtils';
+import { AttachmentUtils } from '../helpers/attachmentUtils';
 import { TodoItem } from '../models/TodoItem'
 import { CreateTodoRequest } from '../requests/CreateTodoRequest'
 import { UpdateTodoRequest } from '../requests/UpdateTodoRequest'
@@ -12,8 +12,8 @@ import { TodosStorage } from '../dataLayer/TodosStorage'
 
 const todosAccess = new TodosAccess()
 const todosStorage = new TodosStorage()
-const logger = createLogger('todos')
-
+const logger = createLogger('TodoAccess')
+const attachmentUtils = new AttachmentUtils()
 
 export async function getTodos(userId: string): Promise<TodoItem[]> {
     logger.info(`Getting todos for user ${userId}`, { userId })
@@ -21,7 +21,10 @@ export async function getTodos(userId: string): Promise<TodoItem[]> {
     return await todosAccess.getTodoItems(userId)
   }
 
-  export async function createTodo(userId: string, createTodoRequest: CreateTodoRequest): Promise<TodoItem> {
+  export async function createTodo(
+    userId: string, 
+    newTodo: CreateTodoRequest
+    ): Promise<TodoItem> {
     const todoId = uuid.v4()
   
     const newItem: TodoItem = {
@@ -30,7 +33,7 @@ export async function getTodos(userId: string): Promise<TodoItem[]> {
       createdAt: new Date().toISOString(),
       done: false,
       attachmentUrl: null,
-      ...createTodoRequest
+      ...newTodo
     }
   
     logger.info(`Creating todo ${todoId} for user ${userId}`, { userId, todoId, todoItem: newItem })
@@ -53,7 +56,7 @@ export async function getTodos(userId: string): Promise<TodoItem[]> {
       throw new Error('User is not authorized to update item')  // FIXME: 403?
     }
   
-    todosAccess.updateTodoItem(todoId, updateTodoRequest as TodoUpdate)
+    todosAccess.updateTodo(todoId, updateTodoRequest as TodoUpdate)
   }
 
   export async function deleteTodo(userId: string, todoId: string) {
