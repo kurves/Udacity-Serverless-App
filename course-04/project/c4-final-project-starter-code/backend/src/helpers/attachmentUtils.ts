@@ -15,7 +15,7 @@ export class AttachmentUtils{
         private readonly bucketName=s3BucketName
    
         ){}
-        getAttachmetUrl(todoId: string){
+        getAttachmentUrl(todoId: string){
             return `https://${this.bucketName}.s3.amazonaws.com/${todoId}`
         }
  getUploadUrl(todoId: string): string{

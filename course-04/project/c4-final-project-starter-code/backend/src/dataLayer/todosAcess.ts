@@ -79,7 +79,7 @@ async updateTodo(
 
 }
 
-async deleteTodo(userId: string, todoId: string): Promise<String> {
+async deleteTodoItems(userId: string, todoId: string): Promise<string> {
     await this.docClient.delete({
         TableName: this.todosTable,
         Key: {

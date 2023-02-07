@@ -7,6 +7,7 @@ import { createLogger } from '../utils/logger'
 import * as uuid from 'uuid'
 import * as createError from 'http-errors'
 import { TodosStorage } from '../dataLayer/TodosStorage'
+import { stringify } from 'querystring';
 // TODO: Implement businessLogic
 
 
@@ -39,41 +40,31 @@ export async function getTodosForUser(userId: string): Promise<TodoItem[]> {
   
     logger.info(`Creating todo ${todoId} for user ${userId}`, { userId, todoId, todoItem: newItem })
   
-    return await todosAccess.createTodoItem(newItem)
+    return await todosAccess.createTodo(newItem)
 
   }
 
-  export async function updateTodo(userId: string, todoId: string, updateTodoRequest: UpdateTodoRequest) {
-    logger.info(`Updating todo ${todoId} for user ${userId}`, { userId, todoId, todoUpdate: updateTodoRequest })
+  export async function updateTodo(userId: string, todoId: string, todoUpdate: UpdateTodoRequest): Promise<UpdateTodoRequest> {
+    logger.info(`Updating todo ${todoId} for user ${userId}`, { userId, todoId, todoUpdate: todoUpdate })
   
-    const item = await todosAccess.getTodoItem(todoId)
+    return await todosAccess.updateTodo(todoId,userId,todoUpdate)
   
-    if (!item)
-      throw new Error('Item not found')  
-  
-    if (item.userId !== userId) {
-      logger.error(`User ${userId} does not have permission to update todo ${todoId}`)
-      throw new Error('User is not authorized to update item')  // FIXME: 403?
-    }
-  
-    todosAccess.updateTodo(todoId, updateTodoRequest as TodoUpdate)
   }
-
-  export async function deleteTodo(userId: string, todoId: string) {
+  export async function deleteTodo(userId: string, todoId: string): Promise<string> {
     logger.info(`Deleting todo ${todoId} for user ${userId}`, { userId, todoId })
-  
-    const item = await todosAccess.getTodoItem(todoId)
-  
-    if (!item)
-      throw new Error('Item not found')  
-  
-    if (item.userId !== userId) {
-      logger.error(`User ${userId} does not have permission to delete todo ${todoId}`)
-      throw new Error('User is not authorized to delete item') 
-    }
-  
-    todosAccess.deleteTodoItem(todoId)
+  return todosAccess.deleteTodoItems(todoId, userId)
+   
   }
+
+  //attachmentPresignedUrl
+export async function createAttachmentPresignedUrl(todoId: string,userId:string) : Promise<string>{
+logger.info('Attachment function created', userId,todoId)
+return attachmentUtils.getUploadUrl(todoId)
+
+}
+
+
+
 
   export async function updateAttachmentUrl(userId: string, todoId: string, attachmentId: string) {
     logger.info(`Generating attachment URL for attachment ${attachmentId}`)
