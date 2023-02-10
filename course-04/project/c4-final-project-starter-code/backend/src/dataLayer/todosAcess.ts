@@ -10,7 +10,7 @@ const XAWS = AWSXRay.captureAWS(AWS)
 const logger = createLogger('TodosAccess')
 
 // TODO: Implement the dataLayer logic
-
+const urlExpiration = 300;
 
 export class TodosAccess {
 
@@ -94,56 +94,40 @@ async deleteTodoItems(userId: string, todoId: string): Promise<string> {
 
 }
 
-async generateUploadUrl(userId: string, todoId: string): Promise<String> {
-    const url = getUploadUrl(todoId, this.bucketName)
+async updateAttachmentUrl(todoId: string, attachmentUrl: string) {
+    logger.info(`Updating URL for todo ${todoId} in ${this.todosTable}`)
 
-    const attachmentUrl: string = 'https://' + this.bucketName + '.s3.amazonaws.com/' + todoId
-
-    const options = {
-        TableName: this.todosTable,
-        Key: {
-            userId: userId,
-            todoId: todoId
-        },
-        UpdateExpression: "set attachmentUrl = :r",
-        ExpressionAttributeValues: {
-            ":r": attachmentUrl
-        },
-        ReturnValues: "UPDATED_NEW"
-    };
-
-    await this.docClient.update(options).promise()
-    logger.info("Presigned url generated ", url)
-
-    return url;
-
-}
+    await this.docClient.update({
+      TableName: this.todosTable,
+      Key: {
+        todoId
+      },
+      UpdateExpression: 'set attachmentUrl = :attachmentUrl',
+      ExpressionAttributeValues: {
+        ':attachmentUrl': attachmentUrl
+      }
+    }).promise()
+  }
 
 
 }
 
-function getUploadUrl(todoId: string, bucketName: string): string {
-    return s3.getSignedUrl('putObject', {
-        Bucket: bucketName,
-        Key: todoId,
-        Expires: parseInt(urlExpiration)
-    })
-}
 
 
 
 
 
 
-function createDynamoDBClient() {
-    if (process.env.IS_OFFLINE) {
-        console.log('Creating a local DynamoDB instance')
-        return new XAWS.DynamoDB.DocumentClient({
-            region: 'localhost',
-            endpoint: 'http://localhost:8000'
-        })
-    }
 
-    return new XAWS.DynamoDB.DocumentClient()
-}
+// function createDynamoDBClient() {
+//     if (process.env.IS_OFFLINE) {
+//         console.log('Creating a local DynamoDB instance')
+//         return new XAWS.DynamoDB.DocumentClient({
+//             region: 'localhost',
+//             endpoint: 'http://localhost:8000'
+//         })
+//     }
+
+//     return new XAWS.DynamoDB.DocumentClient()
+// }
 

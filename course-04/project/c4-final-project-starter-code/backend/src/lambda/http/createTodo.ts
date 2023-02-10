@@ -12,7 +12,8 @@ export const handler = middy(
     const newTodo: CreateTodoRequest = JSON.parse(event.body)
     // TODO: Implement creating a new TODO item
 const userId = getUserId(event)
-const newItem = await createTodo(newTodo, userId)
+
+const newItem = await createTodo(userId, newTodo)
     return {
       statusCode:210,
       body: JSON.stringify({
