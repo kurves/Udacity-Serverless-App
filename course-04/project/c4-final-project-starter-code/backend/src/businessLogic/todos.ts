@@ -45,13 +45,39 @@ export async function getTodosForUser(userId: string): Promise<TodoItem[]> {
 
   export async function updateTodo(userId: string, todoId: string, todoUpdate: UpdateTodoRequest): Promise<TodoUpdate> {
     logger.info(`Updating todo ${todoId} for user ${userId}`, { userId, todoId, todoUpdate: todoUpdate })
-  
-    return await todosAccess.updateTodo(todoId,userId,todoUpdate)
-  
-  }
+     const item = await todosAccess.getUserItem(todoId)
+
+     if (!item)
+     throw new Error('Item not found')  
+ 
+   if (item.userId !== userId) {
+     logger.error(`User ${userId} has no  permission to update todo ${todoId}`)
+     throw new Error('not authorized to update item')  
+   }
+ 
+  return todosAccess.updateTodo(userId,todoId, todoUpdate)
+ }
+
+   
   export async function deleteTodo(userId: string, todoId: string): Promise<string> {
     logger.info(`Deleting todo ${todoId} for user ${userId}`, { userId, todoId })
-  return todosAccess.deleteTodoItems(todoId, userId)
+  
+    const item = await todosAccess.getUserItem(todoId)
+
+
+  if (!item)
+    throw new Error('Item not found') 
+
+  if (item.userId !== userId) {
+    logger.error(`User ${userId} does not have permission to delete todo ${todoId}`)
+    throw new Error('not authorized to delete item')  
+  }
+  
+  
+  
+    return todosAccess.deleteTodoItems(todoId, userId)
+
+
    
   }
 
@@ -66,20 +92,20 @@ return attachmentUtils.getUploadUrl(todoId)
 
 
   export async function updateAttachmentUrl(userId: string, todoId: string, attachmentId: string) {
-    logger.info(`Generating attachment URL for attachment ${attachmentId}`)
+    logger.info(`Generating URL for${attachmentId}`)
   
-    const attachmentUrl = await todosStorage.getAttachmentUrl(attachmentId)
+    const attachmentUrl = await attachmentUtils.getAttachmentUrl(attachmentId)
   
     logger.info(`Updating todo ${todoId} with attachment URL ${attachmentUrl}`, { userId, todoId })
   
-    const item = await todosAccess.getTodoItem(todoId)
+    const item = await todosAccess.getUserItem(todoId)
   
     if (!item)
       throw new Error('Item not found')  
   
     if (item.userId !== userId) {
       logger.error(`User ${userId} does not have permission to update todo ${todoId}`)
-      throw new Error('User is not authorized to update item') 
+      throw new Error('not authorized to update item') 
     }
   
     await todosAccess.updateAttachmentUrl(todoId, attachmentUrl)
@@ -88,7 +114,7 @@ return attachmentUtils.getUploadUrl(todoId)
   export async function generateUploadUrl(attachmentId: string): Promise<string> {
     logger.info(`Generating upload URL for attachment ${attachmentId}`)
   
-    const uploadUrl = await todosStorage.getUploadUrl(attachmentId)
+    const uploadUrl = await attachmentUtils.getUploadUrl(attachmentId)
   
     return uploadUrl
   }

@@ -1,17 +1,16 @@
 import * as AWS from 'aws-sdk'
-import * as AWSXRay from 'aws-xray-sdk'
+
 import { DocumentClient } from 'aws-sdk/clients/dynamodb'
 import { createLogger } from '../utils/logger'
 import { TodoItem } from '../models/TodoItem'
 import { TodoUpdate } from '../models/TodoUpdate';
+const AWSXRay = require('aws-xray-sdk')
 
 const XAWS = AWSXRay.captureAWS(AWS)
 
 const logger = createLogger('TodosAccess')
 
 // TODO: Implement the dataLayer logic
-const urlExpiration = 300;
-
 export class TodosAccess {
 
     constructor(
@@ -25,6 +24,7 @@ async getAllTodos(userId: string): Promise<TodoItem[]> {
     const result = await this.docClient.query({
         TableName: this.todosTable,
         IndexName: this.todosTable,
+        
         KeyConditionExpression: 'userId = :userId',
         ExpressionAttributeValues: {
             ':userId': userId
@@ -38,6 +38,25 @@ async getAllTodos(userId: string): Promise<TodoItem[]> {
     return items as TodoItem[]
 
 }
+
+async getUserItem(todoId: string): Promise<TodoItem> {
+    logger.info(`Getting todo ${todoId} from ${this.todosTable}`)
+
+    const result = await this.docClient.get({
+      TableName: this.todosTable,
+      Key: {
+        todoId
+      }
+    }).promise()
+
+    const item = result.Item
+
+    return item as TodoItem
+  }
+
+
+
+
 async createTodo(todoItem: TodoItem): Promise<TodoItem> {
     logger.info("Create todo function")
     const result =await this.docClient.put({
