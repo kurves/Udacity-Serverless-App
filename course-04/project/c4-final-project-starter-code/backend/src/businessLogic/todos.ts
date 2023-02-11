@@ -62,7 +62,7 @@ export async function getTodosForUser(userId: string): Promise<TodoItem[]> {
   export async function deleteTodo(userId: string, todoId: string): Promise<string> {
     logger.info(`Deleting todo ${todoId} for user ${userId}`, { userId, todoId })
   
-    const item = await todosAccess.getUserItem(todoId)
+    const item = await todosAccess.getUserItem(todoId);
 
 
   if (!item)
@@ -75,16 +75,14 @@ export async function getTodosForUser(userId: string): Promise<TodoItem[]> {
   
   
   
-    return todosAccess.deleteTodoItems(todoId, userId)
+    return (todosAccess.deleteTodoItems(todoId, userId));
 
-
-   
   }
 
   //attachmentPresignedUrl
 export async function createAttachmentPresignedUrl(todoId: string,userId:string) : Promise<string>{
 logger.info('Attachment function created', userId,todoId)
-return attachmentUtils.getUploadUrl(todoId)
+return (attachmentUtils.getUploadUrl(todoId));
 
 }
 
@@ -108,7 +106,7 @@ return attachmentUtils.getUploadUrl(todoId)
       throw new Error('not authorized to update item') 
     }
   
-    await todosAccess.updateAttachmentUrl(todoId, attachmentUrl)
+  return  await todosAccess.updateAttachmentUrl(todoId, attachmentUrl)
   }
 
   export async function generateUploadUrl(attachmentId: string): Promise<string> {
@@ -116,5 +114,5 @@ return attachmentUtils.getUploadUrl(todoId)
   
     const uploadUrl = await attachmentUtils.getUploadUrl(attachmentId)
   
-    return uploadUrl
+    return uploadUrl;
   }

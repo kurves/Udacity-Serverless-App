@@ -107,7 +107,7 @@ async deleteTodoItems(userId: string, todoId: string): Promise<string> {
         }
     }).promise()
     
-    logger.info("delete successfull")
+    logger.info("delete successfull");
 
     return ''
 
