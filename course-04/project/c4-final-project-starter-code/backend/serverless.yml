@@ -1,7 +1,7 @@
 # TODO: Change the name of the org 
 org: kurves
-app: serverless-todo-app7
-service: serverless-todo-app7
+app: serverless-todo-app8
+service: serverless-todo-app8
 
 plugins:
   - serverless-webpack
@@ -25,9 +25,11 @@ provider:
   # Use these variables in the functions and resouorces section below. For example, 
   # ${self:provider.environment.ATTACHMENT_S3_BUCKET}
   environment:
+    
     TODOS_TABLE: Todos-${self:provider.stage}
     TODOS_CREATED_AT_INDEX: CreatedAtIndex
-    ATTACHMENT_S3_BUCKET: serverless-c5-todo-images-${self:provider.stage}
+    ATTACHMENT_S3_BUCKET: serverless-c4-todo-images-${self:provider.stage}
+    S3_BUCKET_NAME: kurves-serverless-application-todo-${self:provider.stage}
     SIGNED_URL_EXPIRATION: 300
     GROUPS_TABLE: Groups-${self:provider.stage}
     TODOS_BY_USER_INDEX: TodosByUserIndex
@@ -233,7 +235,7 @@ resources:
     AttachmentsBucket:
       Type: AWS::S3::Bucket
       Properties:
-        BucketName: ${self:provider.environment.ATTACHMENT_S3_BUCKET}
+        BucketName: ${self:provider.environment.S3_BUCKET_NAME}
         CorsConfiguration:
           CorsRules: 
             - AllowedOrigins:
@@ -261,5 +263,5 @@ resources:
               Effect: Allow
               Principal: '*'
               Action: 's3:GetObject'
-              Resource: 'arn:aws:s3:::${self:provider.environment.ATTACHMENT_S3_BUCKET}/*'
+              Resource: 'arn:aws:s3:::${self:provider.environment.S3_BUCKET_NAME}/*'
         Bucket: !Ref AttachmentsBucket  
