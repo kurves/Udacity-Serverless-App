@@ -137,7 +137,7 @@ functions:
     iamRoleStatements:
       - Effect: Allow
         Action:
-          - dynamodb:DeleteItem
+          - dynamodb: DeleteItem
         Resource: arn:aws:dynamodb:${self:provider.region}[*]table/${self:provider.environment.TODOS_TABLE}
       - Effect: Allow
         Action:
