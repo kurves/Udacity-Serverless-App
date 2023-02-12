@@ -199,16 +199,16 @@ resources:
         RestApiId:
           Ref: 'ApiGatewayRestApi'
 
-  GatewayResponseDefault5XX:
-    Type: AWS::ApiGateway::GatewayResponse
-    Properties:
-      ResponseParameters:
-        gatewayresponse.header.Access-Control-Allow-Origin: "*"
-        gatewayresponse.header.Access-Control-Allow-Headers: "'Content-Type,X-Anz-Date,Authorization,X-Api-key,X-Anz-Security'"
-        gatewayresponse.header.Access-Control-Allow-Methods: "'GET,PUT,OPTIONS,POST,DELETE,PATCH'"
-      ResponseType: DEFAULT_5XX
-      RestApiId:
-        Ref: 'ApiGatewayRestApi'
+    GatewayResponseDefault5XX:
+      Type: AWS::ApiGateway::GatewayResponse
+      Properties:
+        ResponseParameters:
+          gatewayresponse.header.Access-Control-Allow-Origin: "*"
+          gatewayresponse.header.Access-Control-Allow-Headers: "'Content-Type,X-Anz-Date,Authorization,X-Api-key,X-Anz-Security'"
+          gatewayresponse.header.Access-Control-Allow-Methods: "'GET,PUT,OPTIONS,POST,DELETE,PATCH'"
+        ResponseType: DEFAULT_5XX
+        RestApiId:
+          Ref: 'ApiGatewayRestApi'
 
 
  # TODO: Create a DynamoDB table with local secondary index and a composite key
