@@ -215,7 +215,7 @@ resources:
     TodosTable:
       Type: AWS::DynamoDB::Table
       Properties:
-        AttributesDefinitions:
+        AttributeDefinitions:
           - AttributeName: userId
             AttributeType: S
           - AttributeName: createdAt
@@ -224,10 +224,7 @@ resources:
             AttributeType: S
         KeySchema:
           - AttributeName: todoId
-            keyType: HASH
-          - AttributeName: createdAt
-            keytype: RANGE      
-            
+            keyType: HASH 
         BillingMode: PAY_PER_REQUEST
         TableName: ${self:provider.environment.TODOS_TABLE}        
  # GlobalSecondaryIndexes:
