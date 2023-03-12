@@ -73,8 +73,6 @@ export async function getTodosForUser(userId: string): Promise<TodoItem[]> {
     throw new Error('not authorized to delete item')  
   }
   
-  
-  
     return (todosAccess.deleteTodoItems(todoId, userId));
 
   }

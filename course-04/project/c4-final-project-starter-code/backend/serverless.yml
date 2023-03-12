@@ -1,7 +1,7 @@
 # TODO: Change the name of the org 
 org: kurves
-app: serverless-todo-app8
-service: serverless-todo-app8
+app: serverless-todo-app9
+service: serverless-todo-app9
 
 plugins:
   - serverless-webpack
@@ -20,12 +20,10 @@ provider:
     lambda: true
     apiGateway: true
 
-    
 
   # Use these variables in the functions and resouorces section below. For example, 
   # ${self:provider.environment.ATTACHMENT_S3_BUCKET}
   environment:
-    
     TODOS_TABLE: Todos-${self:provider.stage}
     TODOS_CREATED_AT_INDEX: CreatedAtIndex
     ATTACHMENT_S3_BUCKET: serverless-c4-todo-images-${self:provider.stage}
