@@ -16,24 +16,20 @@ export class TodosAccess {
     constructor(
       private readonly docClient: DocumentClient = new XAWS.DynamoDB.DocumentClient(),
       private readonly todosTable = process.env.TODOS_TABLE,
-      //private readonly todosIndex = process.env.TODOS_BY_USER_INDEX
+      private readonly todosIndex = process.env.TODOS_BY_USER_INDEX
     ) {}
 async getAllTodos(userId: string): Promise<TodoItem[]> {
     logger.info('Getting all todos')
 
     const result = await this.docClient.query({
         TableName: this.todosTable,
-        IndexName: this.todosTable,
-        
+        IndexName: this.todosIndex,
         KeyConditionExpression: 'userId = :userId',
         ExpressionAttributeValues: {
             ':userId': userId
         }
     }).promise()
-
-
     logger.info("Todo's retrieved")
-
     const items = result.Items
     return items as TodoItem[]
 
@@ -64,7 +60,6 @@ async createTodo(todoItem: TodoItem): Promise<TodoItem> {
         Item: todoItem
     }).promise()
     logger.info('Todo created', result)
-
     return todoItem as TodoItem
 }
 
@@ -73,31 +68,33 @@ async updateTodo(
     todoId: string, 
     todoUpdate: TodoUpdate): Promise<TodoUpdate> {
         logger.info('Update todo item')
-    var params = {
-        TableName: this.todosTable,
-        Key: {
-            userId: userId,
-            todoId: todoId
-        },
-        UpdateExpression: "set attachmentUrl = :attachmentUrl",
-        ExpressionAttributeValues: {
-            
-            ":r": todoUpdate.name,
-            ":p": todoUpdate.dueDate,
-            ":a": todoUpdate.done
-        },
-        ExpressionAttributeNames: {
-            "#n": "name"
-        },
-        ReturnValues: "UPDATED_NEW"
-    };
-
-    await this.docClient.update(params).promise()
-    logger.info("Update successful")
-    return todoUpdate
-
-}
-
+    const result= await this.docClient
+      .update({
+      TableName: this.todosTable,
+      Key: {
+          userId: userId,
+          todoId: todoId
+      },
+      UpdateExpression: "set attachmentUrl = :attachmentUrl",
+      ExpressionAttributeValues: {
+          
+          ":r": todoUpdate.name,
+          ":p": todoUpdate.dueDate,
+          ":a": todoUpdate.done
+      },
+      ExpressionAttributeNames: {
+          "#n": "name"
+      },
+      ReturnValues: "UPDATED_NEW"
+    })
+    .promise()
+    const todoItemUpdate = result.Attributes
+        //logger.info('To do item updated',todoItemUpdate)
+        return todoItemUpdate as TodoUpdate
+        
+        
+    }
+      
 async deleteTodoItems(userId: string, todoId: string): Promise<string> {
     await this.docClient.delete({
         TableName: this.todosTable,

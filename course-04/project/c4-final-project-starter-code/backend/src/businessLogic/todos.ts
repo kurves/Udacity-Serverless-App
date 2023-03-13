@@ -9,25 +9,22 @@ import * as uuid from 'uuid'
 //import { stringify } from 'querystring';
 import  {TodoUpdate}  from '../models/TodoUpdate'
 // TODO: Implement businessLogic
-
-
 const todosAccess = new TodosAccess()
 const logger = createLogger('TodoAccess')
 const attachmentUtils = new AttachmentUtils()
 
+//Get todo function
 export async function getTodosForUser(userId: string): Promise<TodoItem[]> {
     logger.info(`Getting todos for user ${userId}`, { userId })
-  
-    return await todosAccess.getAllTodos(userId)
+    return todosAccess.getAllTodos(userId)
   }
-
+//create a todo function
   export async function createTodo(
     userId: string, 
     newTodo: CreateTodoRequest
-    ): Promise<TodoItem> {
+    ):Promise<TodoItem> {
     const todoId = uuid.v4()
     const attachmentUrl = attachmentUtils.getAttachmentUrl(todoId)
-  
     const newItem: TodoItem = {
       userId,
       todoId,
@@ -38,14 +35,15 @@ export async function getTodosForUser(userId: string): Promise<TodoItem[]> {
     }
   
     logger.info(`Creating todo ${todoId} for user ${userId}`, { userId, todoId, todoItem: newItem })
-  
     return await todosAccess.createTodo(newItem)
-
-  }
-
-  export async function updateTodo(userId: string, todoId: string, todoUpdate: UpdateTodoRequest): Promise<TodoUpdate> {
+}
+// update function
+  export async function updateTodo(
+    userId: string, 
+    todoId: string,
+    todoUpdate: UpdateTodoRequest): Promise<TodoUpdate> {
     logger.info(`Updating todo ${todoId} for user ${userId}`, { userId, todoId, todoUpdate: todoUpdate })
-     const item = await todosAccess.getUserItem(todoId)
+    const item = await todosAccess.getUserItem(todoId)
 
      if (!item)
      throw new Error('Item not found')  
@@ -54,17 +52,14 @@ export async function getTodosForUser(userId: string): Promise<TodoItem[]> {
      logger.error(`User ${userId} has no  permission to update todo ${todoId}`)
      throw new Error('not authorized to update item')  
    }
- 
-  return todosAccess.updateTodo(userId,todoId, todoUpdate)
+  return await todosAccess.updateTodo(userId,todoId, todoUpdate)
  }
 
-   
+   //delete function
   export async function deleteTodo(userId: string, todoId: string): Promise<string> {
     logger.info(`Deleting todo ${todoId} for user ${userId}`, { userId, todoId })
   
     const item = await todosAccess.getUserItem(todoId);
-
-
   if (!item)
     throw new Error('Item not found') 
 
@@ -73,7 +68,7 @@ export async function getTodosForUser(userId: string): Promise<TodoItem[]> {
     throw new Error('not authorized to delete item')  
   }
   
-    return (todosAccess.deleteTodoItems(todoId, userId));
+    return todosAccess.deleteTodoItems(todoId, userId);
 
   }
 
@@ -109,7 +104,7 @@ return (attachmentUtils.getUploadUrl(todoId));
 
   export async function generateUploadUrl(attachmentId: string): Promise<string> {
     logger.info(`Generating upload URL for attachment ${attachmentId}`)
-  
+    
     const uploadUrl = await attachmentUtils.getUploadUrl(attachmentId)
   
     return uploadUrl;
