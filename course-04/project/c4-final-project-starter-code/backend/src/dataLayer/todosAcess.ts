@@ -91,12 +91,10 @@ async updateTodo(
     const todoItemUpdate = result.Attributes
         //logger.info('To do item updated',todoItemUpdate)
         return todoItemUpdate as TodoUpdate
-        
-        
     }
       
 async deleteTodoItems(userId: string, todoId: string): Promise<string> {
-    await this.docClient.delete({
+    const result = await this.docClient.delete({
         TableName: this.todosTable,
         Key: {
             userId: userId,
@@ -104,9 +102,8 @@ async deleteTodoItems(userId: string, todoId: string): Promise<string> {
         }
     }).promise()
     
-    logger.info("delete successfull");
-
-    return ''
+    logger.info("delete successfull", result);
+    return todoId as string
 
 }
 
@@ -125,7 +122,24 @@ async updateAttachmentUrl(todoId: string, attachmentUrl: string) {
     }).promise()
   }
 
+  async  ImgUrl(todoId:string,userId:string,bucketName:string):Promise<void> {
+    await this.docClient
+    .update({
+        TableName:this.todosTable,
+        Key:{
+            todoId,
+            userId
+        },
+        //ConditionExpression:'attribute_exits(todoId)',
+        UpdateExpression:'set attachmentUrl=:attachmentUrl',
+        ExpressionAttributeValues:{
+            ':attachmentUrl':`https:${bucketName}.s3.amazonaws.com/${todoId}`
+        }
 
+    })
+    .promise(); 
+
+}
 }
 
 

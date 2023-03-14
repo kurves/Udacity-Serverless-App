@@ -1,5 +1,5 @@
 //import { APIGatewayAuthorizerEvent,CustomAuthorizerEvent, 
-import {CustomAuthorizerResult } from 'aws-lambda'
+import {CustomAuthorizerResult  } from 'aws-lambda'
 import 'source-map-support/register'
 
 import { verify} from 'jsonwebtoken'
