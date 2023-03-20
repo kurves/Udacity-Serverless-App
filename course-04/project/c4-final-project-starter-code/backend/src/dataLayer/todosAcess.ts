@@ -8,7 +8,7 @@ const AWSXRay = require('aws-xray-sdk')
 
 const XAWS = AWSXRay.captureAWS(AWS)
 
-const logger = createLogger('auth')
+const logger = createLogger('todoAccess')
 
 // TODO: Implement the dataLayer logic
 export class TodosAccess {

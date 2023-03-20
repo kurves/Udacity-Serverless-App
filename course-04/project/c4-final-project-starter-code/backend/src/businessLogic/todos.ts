@@ -11,8 +11,13 @@ import * as AWS from 'aws-sdk';
 import  {TodoUpdate}  from '../models/TodoUpdate'
 // TODO: Implement businessLogic
 const todosAccess = new TodosAccess()
-const logger = createLogger('TodoAccess')
+const logger = createLogger('todos')
 const attachmentUtils = new AttachmentUtils()
+
+export async function getAllTodos(userId: string): Promise<TodoItem[]> {
+  return todosAccess.getAllTodos(userId)
+}
+
 
 //Get todo function
 export async function getTodosForUser(userId: string): Promise<TodoItem[]> {
@@ -25,18 +30,19 @@ export async function getTodosForUser(userId: string): Promise<TodoItem[]> {
     newTodo: CreateTodoRequest
     ):Promise<TodoItem> {
     const todoId = uuid.v4()
-    const attachmentUrl = attachmentUtils.getAttachmentUrl(todoId)
+    //const attachmentUrl = attachmentUtils.getAttachmentUrl(todoId)
     const newItem: TodoItem = {
       userId,
       todoId,
       createdAt: new Date().toISOString(),
       done: false,
-      attachmentUrl: attachmentUrl,
+      attachmentUrl: null,
       ...newTodo
     }
   
     logger.info(`Creating todo ${todoId} for user ${userId}`, { userId, todoId, todoItem: newItem })
     return await todosAccess.createTodo(newItem)
+  
 }
 // update function
   export async function updateTodo(
@@ -53,7 +59,7 @@ export async function getTodosForUser(userId: string): Promise<TodoItem[]> {
      logger.error(`User ${userId} has no  permission to update todo ${todoId}`)
      throw new Error('not authorized to update item')  
    }
-  return await todosAccess.updateTodo(userId,todoId, todoUpdate)
+  return  todosAccess.updateTodo(userId,todoId, todoUpdate)
  }
 
    //delete function
@@ -100,7 +106,7 @@ return (attachmentUtils.getUploadUrl(todoId));
       throw new Error('not authorized to update item') 
     }
   
-  return  await todosAccess.updateAttachmentUrl(todoId, attachmentUrl)
+  return   todosAccess.updateAttachmentUrl(todoId, attachmentUrl)
   }
 
   // export async function generateUploadUrl(todoId:string, userId:string,attachmentId: string): Promise<string> {
