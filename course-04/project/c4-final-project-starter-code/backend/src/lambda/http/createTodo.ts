@@ -1,7 +1,7 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda'
 import 'source-map-support/register'
 import middy from 'middy'
-import { cors } from 'middy/middlewares'
+import { cors , httpErrorHandler} from 'middy/middlewares'
 import { CreateTodoRequest } from '../../requests/CreateTodoRequest'
 import { getUserId } from '../utils'
 import { createTodo } from '../../businessLogic/todos'
@@ -25,7 +25,9 @@ const newItem = await createTodo(userId, newTodo)
 )
 
 
-handler.use(
+handler
+.use(httpErrorHandler())
+.use(
   cors({
     credentials: true
   })
