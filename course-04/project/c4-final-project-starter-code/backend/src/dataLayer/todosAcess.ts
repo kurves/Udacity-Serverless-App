@@ -14,7 +14,7 @@ const logger = createLogger('auth')
 export class TodosAccess {
 
     constructor(
-      private readonly docClient: DocumentClient = new XAWS.DynamoDB.DocumentClient(),
+      private readonly docClient: DocumentClient = createDynamoDBClient(),
       private readonly todosTable = process.env.TODOS_TABLE,
       private readonly todosIndex = process.env.TODOS_BY_USER_INDEX
     ) {}
@@ -142,22 +142,15 @@ async updateAttachmentUrl(todoId: string, attachmentUrl: string) {
 }
 }
 
+function createDynamoDBClient() {
+    if (process.env.IS_OFFLINE) {
+        console.log('Creating a local DynamoDB instance')
+        return new XAWS.DynamoDB.DocumentClient({
+            region: 'localhost',
+            endpoint: 'http://localhost:8000'
+        })
+    }
 
-
-
-
-
-
-
-// function createDynamoDBClient() {
-//     if (process.env.IS_OFFLINE) {
-//         console.log('Creating a local DynamoDB instance')
-//         return new XAWS.DynamoDB.DocumentClient({
-//             region: 'localhost',
-//             endpoint: 'http://localhost:8000'
-//         })
-//     }
-
-//     return new XAWS.DynamoDB.DocumentClient()
-// }
+    return new XAWS.DynamoDB.DocumentClient()
+}
 
