@@ -15,8 +15,7 @@ export class AttachmentUtils{
         private readonly bucketName=s3BucketName,
        // private readonly urlExpiration = process.env.SIGNED_URL_EXPIRATION
 
-   
-        ){}
+       ){}
         getAttachmentUrl(todoId: string){
             const url =`https://${this.bucketName}.s3.amazonaws.com/${todoId}`
             return url       

@@ -247,7 +247,8 @@ resources:
         BucketName: ${self:provider.environment.S3_BUCKET_NAME}
         CorsConfiguration:
           CorsRules: 
-            - AllowedOrigins:
+            - 
+              AllowedOrigins:
                 - '*'
               AllowedHeaders:
                 - '*'  
