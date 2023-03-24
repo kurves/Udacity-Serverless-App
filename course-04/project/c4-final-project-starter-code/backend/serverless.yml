@@ -11,7 +11,7 @@ plugins:
 provider:
   name: aws
   runtime: nodejs12.x
-  lambdaHashingVersion: "20201221"
+  #lambdaHashingVersion: "20201221"
   stage: ${opt:stage, 'dev'}
   region: ${opt:region, 'us-east-1'}
 
@@ -23,20 +23,29 @@ provider:
   # Use these variables in the functions and resouorces section below. For example, 
   # ${self:provider.environment.ATTACHMENT_S3_BUCKET}
   environment:
-    TODOS_TABLE: Todos-${self:provider.stage}
+    TODOS_TABLE: serverless-todos-app-${self:provider.stage}
     TODOS_CREATED_AT_INDEX: CreatedAtIndex
-    ATTACHMENT_S3_BUCKET: serverless-c4-todo-images-${self:provider.stage}
-    S3_BUCKET_NAME: kurves-serverless-application-todo-${self:provider.stage}
+    ATTACHMENT_S3_BUCKET: serverless-c9-todo-images-${self:provider.stage}
+    #S3_BUCKET_NAME: kurves-serverless-application-todo-${self:provider.stage}
     SIGNED_URL_EXPIRATION: 300
-    GROUPS_TABLE: Groups-${self:provider.stage}
+    #GROUPS_TABLE: Groups-${self:provider.stage}
     TODOS_BY_USER_INDEX: TodosByUserIndex
+    PROJECT_NAME: serverless-todo-app9
 
   logs:
     # Enable API Gateway logs
     restApi: true
 
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - xray:PutTraceSegments
+            - xray:PutTelemetryRecords
+          Resource:
+            - "*" 
 functions:
-
   Auth:
     handler: src/lambda/auth/auth0Authorizer.handler
 
