@@ -29,7 +29,7 @@
     "@types/uuid": "^9.0.1",
     "aws-sdk": "^2.1313.0",
     "serverless-aws-documentation": "^1.1.0",
-    "serverless-iam-roles-per-function": "^3.2.0-e97ab49",
+    "serverless-iam-roles-per-function": "^3.2.0",
     "serverless-plugin-canary-deployments": "^0.4.8",
     "serverless-plugin-tracing": "^2.0.0",
     "serverless-reqvalidator-plugin": "^1.0.4",
