@@ -45,6 +45,34 @@ provider:
             - xray:PutTelemetryRecords
           Resource:
             - "*" 
+custom:
+  documentation:
+    api: 
+      info:
+        version: v1.0.0
+        title: Todos App
+        description: A serverless app for tracking Todos
+    models: 
+      - name: CreateTodoRequest
+        contentType: application/json
+        schema: ${file(models/create-todo-model.json)}
+      - name: UpdateTodoRequest
+        contentType: application/json
+        schema: ${file(models/update-todo-model.json)}
+
+functions:
+  Auth:
+    handler: src/lambda/auth/auth0Authorizer.handler
+    # TODO: Configure this function - 
+    # Provide iamRoleStatements property for performing Actions on DynamoDB
+  
+  GetTodos:
+    handler: src/lambda/http/getTodos.handler
+...
+
+
+
+
 functions:
   Auth:
     handler: src/lambda/auth/auth0Authorizer.handler
@@ -146,6 +174,11 @@ functions:
           - dynamodb:DeleteItem
           
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}
+      - Effect: Allow
+        Action:
+          - dynamodb:Query
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}/index/*
+      
       - Effect: Allow
         Action:
           - xray:PutTraceSegments
