@@ -195,10 +195,12 @@ functions:
       - Effect: Allow
         Action:
           - dynamodb:Query
+          - dynamodb:UpdateItem
           - dynamodb:PutItem
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self.provider.environment.TODOS_TABLE}  
       - Effect: Allow
         Action:
+          - dynamodb:UpdateItem
           - xray:PutTraceSegments
         Resource:
           - "*"  
