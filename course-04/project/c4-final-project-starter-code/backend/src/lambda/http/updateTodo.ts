@@ -1,9 +1,7 @@
 import 'source-map-support/register'
-
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda'
 import  middy from 'middy'
 import { cors, httpErrorHandler } from 'middy/middlewares'
-
 import { updateTodo } from '../../businessLogic/todos'
 import { UpdateTodoRequest } from '../../requests/UpdateTodoRequest'
 import { getUserId } from '../utils'
@@ -16,9 +14,9 @@ export const handler = middy(
 const userId = getUserId(event)
 console.log("userId",userId)
 await updateTodo(
-  userId,
   todoId,
-  updatedTodo
+  updatedTodo,
+  userId
 )
 return{
   statusCode: 204,

@@ -11,8 +11,10 @@ import * as AWS from 'aws-sdk';
 import  {TodoUpdate}  from '../models/TodoUpdate'
 // TODO: Implement businessLogic
 const todosAccess = new TodosAccess()
+
 const logger = createLogger('todos')
 const attachmentUtils = new AttachmentUtils()
+
 
 export async function getAllTodos(userId: string): Promise<TodoItem[]> {
   return todosAccess.getAllTodos(userId)
@@ -30,13 +32,13 @@ export async function getTodosForUser(userId: string): Promise<TodoItem[]> {
     newTodo: CreateTodoRequest
     ):Promise<TodoItem> {
     const todoId = uuid.v4()
-    //const attachmentUrl = attachmentUtils.getAttachmentUrl(todoId)
+    const attachUrl = attachmentUtils.getAttachmentUrl(todoId)
     const newItem: TodoItem = {
       userId,
       todoId,
       createdAt: new Date().toISOString(),
       done: false,
-      attachmentUrl: null,
+      attachmentUrl: attachUrl,
       ...newTodo
     }
   
@@ -46,9 +48,10 @@ export async function getTodosForUser(userId: string): Promise<TodoItem[]> {
 }
 // update function
   export async function updateTodo(
-    userId: string, 
     todoId: string,
-    todoUpdate: UpdateTodoRequest): Promise<TodoUpdate> {
+    todoUpdate: UpdateTodoRequest,
+    userId: string, 
+   ): Promise<TodoUpdate> {
     logger.info(`Updating todo ${todoId} for user ${userId}`, { userId, todoId, todoUpdate: todoUpdate })
     const item = await todosAccess.getUserItem(todoId)
 
@@ -59,11 +62,13 @@ export async function getTodosForUser(userId: string): Promise<TodoItem[]> {
      logger.error(`User ${userId} has no  permission to update todo ${todoId}`)
      throw new Error('not authorized to update item')  
    }
-  return  todosAccess.updateTodo(userId,todoId, todoUpdate)
+  return  todosAccess.updateTodoItems(todoId, userId,todoUpdate)
  }
 
    //delete function
-  export async function deleteTodo(userId: string, todoId: string): Promise<string> {
+  export async function deleteTodo(
+    userId: string, 
+    todoId: string): Promise<string> {
     logger.info(`Deleting todo ${todoId} for user ${userId}`, { userId, todoId })
   
     const item = await todosAccess.getUserItem(todoId);
@@ -82,7 +87,7 @@ export async function getTodosForUser(userId: string): Promise<TodoItem[]> {
   //attachmentPresignedUrl
 export async function createAttachmentPresignedUrl(todoId: string,userId:string) : Promise<string>{
 logger.info('Attachment function created', userId,todoId)
-return (attachmentUtils.getUploadUrl(todoId));
+return attachmentUtils.getUploadUrl(todoId);
 
 }
 

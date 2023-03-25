@@ -63,42 +63,42 @@ async createTodo(todoItem: TodoItem): Promise<TodoItem> {
     return todoItem as TodoItem
 }
 
-async updateTodo(
-    userId: string, 
+async updateTodoItems(
     todoId: string, 
+    userId: string, 
     todoUpdate: TodoUpdate): Promise<TodoUpdate> {
         logger.info('Update todo item')
     const result= await this.docClient
       .update({
       TableName: this.todosTable,
       Key: {
-          userId: userId,
-          todoId: todoId
+          todoId,
+          userId,
       },
-      UpdateExpression: "set attachmentUrl = :attachmentUrl",
+      UpdateExpression: "set name = :name, dueDate=:dueDate, done =:done",
       ExpressionAttributeValues: {
           
-          ":r": todoUpdate.name,
-          ":p": todoUpdate.dueDate,
-          ":a": todoUpdate.done
+          ":name": todoUpdate.name,
+          ":dueDate": todoUpdate.dueDate,
+          ":done": todoUpdate.done
       },
       ExpressionAttributeNames: {
           "#n": "name"
       },
-      ReturnValues: "UPDATED_NEW"
+      ReturnValues: "ALL_NEW"
     })
     .promise()
-    const todoItemUpdate = result.Attributes
-        //logger.info('To do item updated',todoItemUpdate)
-        return todoItemUpdate as TodoUpdate
+        const todoItem = result.Attributes as TodoUpdate
+        logger.info('To do item updated',result)
+        return todoItem as TodoUpdate
     }
       
 async deleteTodoItems(userId: string, todoId: string): Promise<string> {
     const result = await this.docClient.delete({
         TableName: this.todosTable,
         Key: {
-            userId: userId,
-            todoId: todoId
+            todoId,
+            userId
         }
     }).promise()
     

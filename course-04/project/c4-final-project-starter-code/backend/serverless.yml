@@ -129,7 +129,7 @@ functions:
           documentation:
             summary: "Update todo item"
             requestModels:
-              "application/json" : UpdateTodoRequest
+              "application/json": UpdateTodoRequest
           reqValidatorName: BodyValidator
           # documentation: Update a todo task
           # requestModels: 
@@ -139,7 +139,6 @@ functions:
       - Effect: Allow
         Action:
           - dynamodb:UpdateItem
-       
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}
       - Effect: Allow
         Action:
@@ -195,12 +194,10 @@ functions:
       - Effect: Allow
         Action:
           - dynamodb:Query
-          - dynamodb:UpdateItem
-          - dynamodb:GetItem
+          - dynamodb:PutItem
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self.provider.environment.TODOS_TABLE}  
       - Effect: Allow
         Action:
-          - dynamodb:UpdateItem
           - xray:PutTraceSegments
         Resource:
           - "*"  

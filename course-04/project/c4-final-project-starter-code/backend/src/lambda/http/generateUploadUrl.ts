@@ -1,9 +1,7 @@
 import 'source-map-support/register'
-
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda'
 import  middy from 'middy'
 import { cors, httpErrorHandler } from 'middy/middlewares'
-
 import { createAttachmentPresignedUrl } from '../../businessLogic/todos'
 import { getUserId } from '../utils'
 
@@ -13,8 +11,9 @@ export const handler = middy(
     // TODO: Return a presigned URL to upload a file for a TODO item with the provided id
 const userId= getUserId(event); 
 const url = await createAttachmentPresignedUrl(
-  userId,
-  todoId
+  todoId,
+  userId
+  
 )
 
     return {
