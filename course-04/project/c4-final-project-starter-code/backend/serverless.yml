@@ -135,7 +135,6 @@ functions:
           # requestModels: 
           #   'application/json' : updateTodoRequest
 
-
     iamRoleStatements:
       - Effect: Allow
         Action:
