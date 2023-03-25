@@ -153,7 +153,8 @@ functions:
       - http:
           method: delete
           path: todos/{todoId}
-          cors: true
+          cors: truey
+          
           authorizer: Auth
     iamRoleStatements:
       - Effect: Allow
