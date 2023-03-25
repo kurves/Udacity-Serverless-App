@@ -126,7 +126,11 @@ functions:
           path: todos/{todoId}
           cors: true
           authorizer: Auth
-          # reqValidator: RequestValidator
+          documentation:
+            summary: "Update todo item"
+            requestModels:
+              "application/json" : UpdateTodoRequest
+          reqValidatorName: BodyValidator
           # documentation: Update a todo task
           # requestModels: 
           #   'application/json' : updateTodoRequest
@@ -155,15 +159,14 @@ functions:
           path: todos/{todoId}
           cors: true
           authorizer: Auth
+          reqValidatorName: BodyValidator
     iamRoleStatements:
       - Effect: Allow
         Action:
-          - dynamodb:GetItem
           - dynamodb:DeleteItem
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}
       - Effect: Allow
         Action:
-          - dynamodb:GetItem
           - dynamodb:DeleteItem
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}/index/*
       
@@ -183,18 +186,22 @@ functions:
           path: todos/{todoId}/attachment
           cors: true
           authorizer: Auth
+          reqValidatorName: BodyValidator
     iamRoleStatements:
       - Effect: Allow
         Action:
-          - s3:PutObject
+          - s3:*
+          - xray:PutTraceSegments
         Resource: arn:aws:s3:::${self:provider.environment.ATTACHMENT_S3_BUCKET}/*
       - Effect: Allow
         Action:
+          - dynamodb:Query
           - dynamodb:UpdateItem
           - dynamodb:GetItem
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self.provider.environment.TODOS_TABLE}  
       - Effect: Allow
         Action:
+          - dynamodb:UpdateItem
           - xray:PutTraceSegments
         Resource:
           - "*"  
@@ -213,7 +220,7 @@ resources:
         ResponseParameters:
           gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
           gatewayresponse.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-key,X-Amz-Security-Token'"
-          gatewayresponse.header.Access-Control-Allow-Methods: "'GET,OPTIONS,POST'"
+          gatewayresponse.header.Access-Control-Allow-Methods: "'*'"
         ResponseType: DEFAULT_4XX
         RestApiId:
           Ref: ApiGatewayRestApi
@@ -223,8 +230,8 @@ resources:
       Properties:
         ResponseParameters:
           gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
-          gatewayresponse.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-key,X-Amz-Security'"
-          gatewayresponse.header.Access-Control-Allow-Methods: "'GET,PUT,OPTIONS,POST,DELETE,PATCH'"
+          gatewayresponse.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-key,X-Amz-Security-Token'"
+          gatewayresponse.header.Access-Control-Allow-Methods: "'*'"
         ResponseType: DEFAULT_5XX
         RestApiId:
           Ref: ApiGatewayRestApi
@@ -262,7 +269,7 @@ resources:
               ProjectionType: ALL
 
     BodyValidator:
-      Type: "AWS::ApiGateway::RequestValidator"
+      Type: AWS::ApiGateway::RequestValidator
       Properties:
         Name: 'only-body'
         RestApiId:
