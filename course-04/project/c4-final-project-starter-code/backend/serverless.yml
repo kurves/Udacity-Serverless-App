@@ -197,12 +197,12 @@ functions:
           path: todos/{todoId}/attachment
           cors: true
           authorizer: Auth
-          #reqValidatorName: BodyValidator
+          reqValidatorName: BodyValidator
     iamRoleStatements:
       - Effect: Allow
         Action:
           - s3:*
-        Resource: arn:aws:s3:::${self:provider.environment.ATTACHMENT_S3_BUCKET}/*
+        Resource: arn:aws:s3:::${self:provider.environment.S3_BUCKET_NAME}/*
       - Effect: Allow
         Action:
           - dynamodb:Query
@@ -210,6 +210,7 @@ functions:
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self.provider.environment.TODOS_TABLE}  
       - Effect: Allow
         Action:
+          - dynamodb:UpdateItem
           - xray:PutTraceSegments
         Resource:
           - "*"  
@@ -221,40 +222,6 @@ resources:
     # TODO: Fill the properties
     # Feel free to change the names as you like. 
   
-   
-    GatewayResponseDefault4XX:
-      Type: AWS::ApiGateway::GatewayResponse
-      Properties:
-        ResponseParameters:
-          gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
-          gatewayresponse.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-key,X-Amz-Security-Token'"
-          gatewayresponse.header.Access-Control-Allow-Methods: "'*'"
-        ResponseType: DEFAULT_4XX
-        RestApiId:
-          Ref: ApiGatewayRestApi
-
-    GatewayResponseDefault5XX:
-      Type: AWS::ApiGateway::GatewayResponse
-      Properties:
-        ResponseParameters:
-          gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
-          gatewayresponse.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-key,X-Amz-Security-Token'"
-          gatewayresponse.header.Access-Control-Allow-Methods: "'*'"
-        ResponseType: DEFAULT_5XX
-        RestApiId:
-          Ref: ApiGatewayRestApi
-
-    BodyValidator:
-          Type: AWS::ApiGateway::RequestValidator
-          Properties:
-            Name: 'only-body'
-            RestApiId:
-              Ref: ApiGatewayRestApi
-            ValidateRequestBody: true
-            ValidateRequestParameters: false
-
-
- # TODO: Create a DynamoDB table with local secondary index and a composite key
     TodosTable:
       Type: AWS::DynamoDB::Table
       Properties:
@@ -287,16 +254,37 @@ resources:
             Projection:
               ProjectionType: ALL  
 
-        # LocalSecondaryIndexes:
-        #   - IndexName: ${self:provider.environment.TODOS_CREATED_AT_INDEX}
-        #     KeySchema:
-        #       - AttributeName: userId
-        #         KeyType: HASH
-        #       - AttributeName: createdAt
-        #         KeyType: RANGE
-        #     Projection:
-        #       ProjectionType: ALL 
 
+    BodyValidator:
+          Type: AWS::ApiGateway::RequestValidator
+          Properties:
+            Name: 'only-body'
+            RestApiId:
+              Ref: ApiGatewayRestApi
+            ValidateRequestBody: true
+            ValidateRequestParameters: false
+
+    GatewayResponseDefault4XX:
+      Type: AWS::ApiGateway::GatewayResponse
+      Properties:
+        ResponseParameters:
+          gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+          gatewayresponse.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-key,X-Amz-Security-Token'"
+          gatewayresponse.header.Access-Control-Allow-Methods: "'*'"
+        ResponseType: DEFAULT_4XX
+        RestApiId:
+          Ref: ApiGatewayRestApi
+
+    GatewayResponseDefault5XX:
+      Type: AWS::ApiGateway::GatewayResponse
+      Properties:
+        ResponseParameters:
+          gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+          gatewayresponse.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-key,X-Amz-Security-Token'"
+          gatewayresponse.header.Access-Control-Allow-Methods: "'*'"
+        ResponseType: DEFAULT_5XX
+        RestApiId:
+          Ref: ApiGatewayRestApi
 
     # TODO: Complete the bucket properties below. 
     # Do not forget to add the CorsConfiguration propoerty
@@ -317,7 +305,7 @@ resources:
                 - PUT
                 - DELETE
                 - HEAD
-              MaxAge: 3000
+              MaxAge: 300
 
 # TODO: Complete the policy below and attach it to the bucket defined above
     # For cross referencing the name of the bucket, use "!Ref AttachmentsBucket"

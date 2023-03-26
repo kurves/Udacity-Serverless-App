@@ -50,9 +50,6 @@ async getUserItem(todoId: string): Promise<TodoItem> {
     return item as TodoItem
   }
 
-
-
-
 async createTodo(todoItem: TodoItem): Promise<TodoItem> {
     logger.info("Create todo function")
     const result =await this.docClient.put({
