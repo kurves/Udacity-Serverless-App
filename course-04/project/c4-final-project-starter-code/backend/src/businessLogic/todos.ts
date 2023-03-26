@@ -34,8 +34,9 @@ export async function getTodosForUser(userId: string): Promise<TodoItem[]> {
     const todoId = uuid.v4()
     const attachUrl = attachmentUtils.getAttachmentUrl(todoId)
     const newItem: TodoItem = {
-      userId,
       todoId,
+      userId,
+
       createdAt: new Date().toISOString(),
       done: false,
       attachmentUrl: attachUrl,
@@ -67,8 +68,9 @@ export async function getTodosForUser(userId: string): Promise<TodoItem[]> {
 
    //delete function
   export async function deleteTodo(
-    userId: string, 
-    todoId: string): Promise<string> {
+    todoId: string,
+    userId: string 
+    ): Promise<string> {
     logger.info(`Deleting todo ${todoId} for user ${userId}`, { userId, todoId })
   
     const item = await todosAccess.getUserItem(todoId);
@@ -85,7 +87,10 @@ export async function getTodosForUser(userId: string): Promise<TodoItem[]> {
   }
 
   //attachmentPresignedUrl
-export async function createAttachmentPresignedUrl(todoId: string,userId:string) : Promise<string>{
+export async function createAttachmentPresignedUrl(
+  todoId: string,
+  userId: string
+  ) : Promise<string>{
 logger.info('Attachment function created', userId,todoId)
 return attachmentUtils.getUploadUrl(todoId);
 

@@ -67,13 +67,13 @@ async updateTodoItems(
     todoId: string, 
     userId: string, 
     todoUpdate: TodoUpdate): Promise<TodoUpdate> {
-        logger.info('Update todo item')
+    logger.info('Update todo item')
     const result= await this.docClient
       .update({
       TableName: this.todosTable,
       Key: {
           todoId,
-          userId,
+          userId
       },
       UpdateExpression: "set #name = :name, dueDate=:dueDate, done =:done",
       ExpressionAttributeValues: {
@@ -88,8 +88,8 @@ async updateTodoItems(
       ReturnValues: "ALL_NEW"
     })
     .promise()
-        const todoItem = result.Attributes 
-        logger.info('To do item updated',result)
+        const todoItem = result.Attributes
+        logger.info('To do item updated',todoItem)
         return todoItem as TodoUpdate
     }
       

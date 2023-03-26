@@ -19,7 +19,7 @@ const url = await createAttachmentPresignedUrl(
     return {
       statusCode:201,
       body: JSON.stringify({
-        uploadUrl:url
+      uploadUrl:url
       })
     }
   }

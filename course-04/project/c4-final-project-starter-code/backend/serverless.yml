@@ -162,7 +162,7 @@ functions:
       - Effect: Allow
         Action:
           - dynamodb:DeleteItem
-         
+          - dynamodb:GetItem
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}   
       # - Effect: Allow
       #   Action:
@@ -243,9 +243,9 @@ resources:
         AttributeDefinitions:
           - AttributeName: userId
             AttributeType: S
-          - AttributeName: createdAt
-            AttributeType: S
           - AttributeName: todoId
+            AttributeType: S
+          - AttributeName: createdAt
             AttributeType: S
         KeySchema:
           - AttributeName: userId
@@ -257,8 +257,8 @@ resources:
  # GlobalSecondaryIndexes:
         #   - Indexname: ${self:provider.environment.TODO_ID_INDEX}       
 
-        GlobalSecondaryIndexes:
-          - IndexName: ${self:provider.environment.TODOS_BY_USER_INDEX}
+        LocalSecondaryIndexes:
+          - IndexName: ${self:provider.environment.TODOS_CREATED_AT_INDEX}
             KeySchema:
               - AttributeName: userId
                 KeyType: HASH

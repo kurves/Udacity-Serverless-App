@@ -15,15 +15,15 @@ export class AttachmentUtils{
        // private readonly urlExpiration = process.env.SIGNED_URL_EXPIRATION
 
        ){}
-        getAttachmentUrl(todoId: string){
+      getAttachmentUrl(todoId: string){
             const url =`https://${this.bucketName}.s3.amazonaws.com/${todoId}`
             return url       
         } 
- getUploadUrl(todoId: string): string{
-    const url = this.s3.getSignedUrl('putobject',{
-        Bucket :this.bucketName,
-        key: todoId,
-        Expires: urlExpiration
+      getUploadUrl(todoId: string): string{
+       const url = this.s3.getSignedUrl('putobject',{
+            Bucket: this.bucketName,
+            key: todoId,
+            Expires: urlExpiration
 
  })
  return url as string
