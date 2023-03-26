@@ -46,15 +46,15 @@ provider:
           Resource:
             - "*" 
 
-custom:
-  dynamodb:
-    stages:
-      - ${self:provider.stage}
-    start:
-      port: 8000
-      inMemory: true
-      migrate: true
-      dbPath: "./.db" # Make sure that folder exists!
+# custom:
+#   dynamodb:
+#     stages:
+#       - ${self:provider.stage}
+#     start:
+#       port: 8000
+#       inMemory: true
+#       migrate: true
+#       dbPath: "./.db" # Make sure that folder exists!
 
 
 custom:
