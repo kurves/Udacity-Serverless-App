@@ -15,8 +15,7 @@ const url = await createAttachmentPresignedUrl(
   userId
   
 )
-
-    return {
+  return {
       statusCode:201,
       body: JSON.stringify({
       uploadUrl:url

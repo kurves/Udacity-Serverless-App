@@ -75,7 +75,7 @@ async updateTodoItems(
           todoId,
           userId
       },
-      UpdateExpression: "set #name = :name, dueDate=:dueDate, done =:done",
+      UpdateExpression:"set #name=:name,dueDate=:dueDate, done =:done",
       ExpressionAttributeValues: {
           
           ":name": todoUpdate.name,
@@ -83,7 +83,7 @@ async updateTodoItems(
           ":done": todoUpdate.done
       },
       ExpressionAttributeNames: {
-          "#n": "name"
+          "#name": "name"
       },
       ReturnValues: "ALL_NEW"
     })
@@ -94,50 +94,17 @@ async updateTodoItems(
     }
       
 async deleteTodoItems(todoId: string,userId: string, ): Promise<string> {
-    const result = await this.docClient.delete({
+    const result = await this.docClient
+    .delete({
         TableName: this.todosTable,
         Key: {
             todoId,
-            userId
+            userId 
         }
     }).promise()
     
     logger.info("delete successfull", result);
     return todoId as string
-
-}
-
-async updateAttachmentUrl(todoId: string, attachmentUrl: string) {
-    logger.info(`Updating URL for todo ${todoId} in ${this.todosTable}`)
-
-    await this.docClient.update({
-      TableName: this.todosTable,
-      Key: {
-        todoId
-      },
-      UpdateExpression: 'set attachmentUrl = :attachmentUrl',
-      ExpressionAttributeValues: {
-        ':attachmentUrl': attachmentUrl
-      }
-    }).promise()
-  }
-
-  async  ImgUrl(todoId:string,userId:string,bucketName:string):Promise<void> {
-    await this.docClient
-    .update({
-        TableName:this.todosTable,
-        Key:{
-            todoId,
-            userId
-        },
-        //ConditionExpression:'attribute_exits(todoId)',
-        UpdateExpression:'set attachmentUrl=:attachmentUrl',
-        ExpressionAttributeValues:{
-            ':attachmentUrl':`https:${bucketName}.s3.amazonaws.com/${todoId}`
-        }
-
-    })
-    .promise(); 
 
 }
 }
