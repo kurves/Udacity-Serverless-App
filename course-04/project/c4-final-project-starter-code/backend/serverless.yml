@@ -27,7 +27,7 @@ provider:
     #TODOS_CREATED_AT_INDEX: CreatedAtIndex
     ATTACHMENT_S3_BUCKET: serverless-c9-todo-images-${self:provider.stage}
     S3_BUCKET_NAME: kurves-serverless-application-todo-${self:provider.stage}
-    SIGNED_URL_EXPIRATION: 300
+    SIGNED_URL_EXPIRATION: 3000
     GROUPS_TABLE: Groups-${self:provider.stage}
     TODOS_BY_USER_INDEX: TodosByUserIndex
     PROJECT_NAME: serverless-todo-app9
