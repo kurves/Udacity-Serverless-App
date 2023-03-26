@@ -45,6 +45,18 @@ provider:
             - xray:PutTelemetryRecords
           Resource:
             - "*" 
+
+custom:
+  dynamodb:
+    stages:
+      - ${self:provider.stage}
+    start:
+      port: 8000
+      inMemory: true
+      migrate: true
+      dbPath: "./.db" # Make sure that folder exists!
+
+
 custom:
   documentation:
     api: 
@@ -257,15 +269,15 @@ resources:
  # GlobalSecondaryIndexes:
         #   - Indexname: ${self:provider.environment.TODO_ID_INDEX}       
 
-        LocalSecondaryIndexes:
-          - IndexName: ${self:provider.environment.TODOS_CREATED_AT_INDEX}
-            KeySchema:
-              - AttributeName: userId
-                KeyType: HASH
-              - AttributeName: createdAt
-                KeyType: RANGE
-            Projection:
-              ProjectionType: ALL
+        # LocalSecondaryIndexes:
+        #   - IndexName: ${self:provider.environment.TODOS_CREATED_AT_INDEX}
+        #     KeySchema:
+        #       - AttributeName: userId
+        #         KeyType: HASH
+        #       - AttributeName: createdAt
+        #         KeyType: RANGE
+        #     Projection:
+        #       ProjectionType: ALL
 
     BodyValidator:
       Type: AWS::ApiGateway::RequestValidator
