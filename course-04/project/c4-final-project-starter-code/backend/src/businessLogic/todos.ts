@@ -90,8 +90,8 @@ export async function createAttachmentPresignedUrl(
   todoId: string,
   userId: string
   ) : Promise<string>{
-logger.info('Attachment function created', userId,todoId)
-return attachmentUtils.getUploadUrl(todoId);
+logger.info('Attachment function created',userId,todoId)
+return attachmentUtils.getUploadUrl(todoId)
 
 }
 

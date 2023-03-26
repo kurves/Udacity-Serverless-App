@@ -197,22 +197,19 @@ functions:
           path: todos/{todoId}/attachment
           cors: true
           authorizer: Auth
-          reqValidatorName: BodyValidator
+          #reqValidatorName: BodyValidator
     iamRoleStatements:
       - Effect: Allow
         Action:
           - s3:*
-          - xray:PutTraceSegments
         Resource: arn:aws:s3:::${self:provider.environment.ATTACHMENT_S3_BUCKET}/*
       - Effect: Allow
         Action:
           - dynamodb:Query
-          - dynamodb:UpdateItem
           - dynamodb:PutItem
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self.provider.environment.TODOS_TABLE}  
       - Effect: Allow
         Action:
-          - dynamodb:UpdateItem
           - xray:PutTraceSegments
         Resource:
           - "*"  
