@@ -24,14 +24,14 @@ provider:
   # ${self:provider.environment.ATTACHMENT_S3_BUCKET}
   environment:
     TODOS_TABLE: serverless-todos-app-${self:provider.stage}
-    TODOS_CREATED_AT_INDEX: CreatedAtIndex
+    #TODOS_CREATED_AT_INDEX: CreatedAtIndex
     ATTACHMENT_S3_BUCKET: serverless-c9-todo-images-${self:provider.stage}
     S3_BUCKET_NAME: kurves-serverless-application-todo-${self:provider.stage}
     SIGNED_URL_EXPIRATION: 300
     GROUPS_TABLE: Groups-${self:provider.stage}
     TODOS_BY_USER_INDEX: TodosByUserIndex
     PROJECT_NAME: serverless-todo-app9
-
+  
   logs:
     # Enable API Gateway logs
     restApi: true
@@ -247,27 +247,48 @@ resources:
         RestApiId:
           Ref: ApiGatewayRestApi
 
+    BodyValidator:
+          Type: AWS::ApiGateway::RequestValidator
+          Properties:
+            Name: 'only-body'
+            RestApiId:
+              Ref: ApiGatewayRestApi
+            ValidateRequestBody: true
+            ValidateRequestParameters: false
+
 
  # TODO: Create a DynamoDB table with local secondary index and a composite key
     TodosTable:
       Type: AWS::DynamoDB::Table
       Properties:
         AttributeDefinitions:
-          - AttributeName: userId
+          -
+            AttributeName: userId
             AttributeType: S
-          - AttributeName: todoId
+          - 
+            AttributeName: todoId
             AttributeType: S
-          - AttributeName: createdAt
+          - 
+            AttributeName: createdAt
             AttributeType: S
         KeySchema:
-          - AttributeName: userId
+          - 
+            AttributeName: userId
             KeyType: HASH
-          - AttributeName: todoId
+          - 
+            AttributeName: todoId
             KeyType: RANGE
         BillingMode: PAY_PER_REQUEST
         TableName: ${self:provider.environment.TODOS_TABLE}        
- # GlobalSecondaryIndexes:
-        #   - Indexname: ${self:provider.environment.TODO_ID_INDEX}       
+        LocalSecondaryIndexes:
+          - IndexName: ${self:provider.environment.TODOS_BY_USER_INDEX}
+            KeySchema:
+              - AttributeName: userId
+                KeyType: HASH
+              - AttributeName: createdAt
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL  
 
         # LocalSecondaryIndexes:
         #   - IndexName: ${self:provider.environment.TODOS_CREATED_AT_INDEX}
@@ -277,18 +298,9 @@ resources:
         #       - AttributeName: createdAt
         #         KeyType: RANGE
         #     Projection:
-        #       ProjectionType: ALL
+        #       ProjectionType: ALL 
 
-    BodyValidator:
-      Type: AWS::ApiGateway::RequestValidator
-      Properties:
-        Name: 'only-body'
-        RestApiId:
-          Ref: ApiGatewayRestApi
-        ValidateRequestBody: true
-        ValidateRequestParameters: false
 
-    
     # TODO: Complete the bucket properties below. 
     # Do not forget to add the CorsConfiguration propoerty
     AttachmentsBucket:
