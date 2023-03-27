@@ -202,10 +202,11 @@ functions:
       - Effect: Allow
         Action:
           - s3:*
-        Resource: arn:aws:s3:::${self:provider.environment.S3_BUCKET_NAME}/*
+        Resource: arn:aws:s3:::${self:provider.environment.ATTACHMENT_BUCKET_NAME}/*
       - Effect: Allow
         Action:
           - dynamodb:Query
+          - dynamodb:UpdateItem
           - dynamodb:PutItem
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self.provider.environment.TODOS_TABLE}  
       - Effect: Allow
