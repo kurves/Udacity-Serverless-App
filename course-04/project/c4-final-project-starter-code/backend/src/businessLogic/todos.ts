@@ -32,18 +32,18 @@ export async function getTodosForUser(userId: string): Promise<TodoItem[]> {
     ):Promise<TodoItem> {
     const todoId = uuid.v4()
     const createdAt= new Date().toISOString()
-    const attachUrl = attachmentUtils.getAttachmentUrl(todoId)
+    //const attachUrl = attachmentUtils.getAttachmentUrl(todoId)
     const newItem: TodoItem = {
       todoId,
       userId,
       createdAt,
       done: false,
-      attachmentUrl: attachUrl,
+      attachmentUrl: null,
       ...newTodo
     }
   
     logger.info(`Creating todo ${todoId} for user ${userId}`, { userId, todoId, todoItem: newItem })
-    return await todosAccess.createTodo(newItem)
+    return  todosAccess.createTodo(newItem)
   
 }
 // update function
