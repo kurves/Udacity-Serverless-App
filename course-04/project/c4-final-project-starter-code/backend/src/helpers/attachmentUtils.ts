@@ -5,7 +5,7 @@ const XAWS = AWSXRay.captureAWS(AWS);
 
 // TODO: Implement the fileStogare logic
 
-const s3BucketName = process.env.S3_BUCKET_NAME;
+const s3BucketName = process.env.ATTACHMENT_S3_BUCKET;
 const urlExpiration = 3000
 
 export class AttachmentUtils{
