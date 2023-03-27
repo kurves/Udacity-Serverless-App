@@ -7,6 +7,8 @@ plugins:
   - serverless-webpack
   - serverless-iam-roles-per-function
   - serverless-plugin-tracing
+  - serverless-reqvalidator-plugin
+  - serverless-aws-documentation
   
 provider:
   name: aws
@@ -35,27 +37,6 @@ provider:
   logs:
     # Enable API Gateway logs
     restApi: true
-
-  iam:
-    role:
-      statements:
-        - Effect: Allow
-          Action:
-            - xray:PutTraceSegments
-            - xray:PutTelemetryRecords
-          Resource:
-            - "*" 
-
-# custom:
-#   dynamodb:
-#     stages:
-#       - ${self:provider.stage}
-#     start:
-#       port: 8000
-#       inMemory: true
-#       migrate: true
-#       dbPath: "./.db" # Make sure that folder exists!
-
 
 custom:
   documentation:
@@ -115,6 +96,13 @@ functions:
           path: todos
           cors: true
           authorizer: Auth
+          reqValidatorName: BodyValidator
+          documentation:
+            summary: "Create a todo task"
+            description: "Create a todo task"
+            requestModels:
+              "application/json": CreateTodoRequest   
+         
     iamRoleStatements:
       - Effect: Allow
         Action:
