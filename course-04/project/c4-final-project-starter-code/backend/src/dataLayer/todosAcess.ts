@@ -90,6 +90,32 @@ async updateTodoItems(
         return todoItem as TodoUpdate
     }
       
+
+    async  updateTodoAttachmentUrl(
+        todoId:string,
+        userId:string,
+        attachmentUrl:string 
+    ):Promise<void> {
+             await this.docClient
+          .update({
+            TableName: this.todosTable,
+            Key:{
+                todoId,
+                userId
+              },
+              UpdateExpression:'set attachmentUrl=:attachmentUrl',
+              ExpressionAttributeValues:{
+                ':attachmentUrl':attachmentUrl
+              }
+          })
+        
+          .promise()
+        
+    }
+
+
+
+
 async deleteTodoItems(todoId: string,userId: string, ): Promise<string> {
     const result = await this.docClient
     .delete({
@@ -104,7 +130,32 @@ async deleteTodoItems(todoId: string,userId: string, ): Promise<string> {
     return todoId as string
 
 }
+
+async  imgUrl(todoId:string,userId:string,bucketName:string):Promise<void> {
+    await this.docClient
+    .update({
+        TableName:this.todosTable,
+        Key:{
+            todoId,
+            userId
+        },
+        //ConditionExpression:'attribute_exits(todoId)',
+        UpdateExpression:'set attachmentUrl=:attachmentUrl',
+        ExpressionAttributeValues:{
+            ':attachmentUrl':`https:${bucketName}.s3.amazonaws.com/${todoId}`
+        }
+
+    })
+    .promise(); 
+
+}   
+
 }
+
+
+
+
+
 
 function createDynamoDBClient() {
     if (process.env.IS_OFFLINE) {

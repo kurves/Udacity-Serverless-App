@@ -1,18 +1,18 @@
 import { TodosAccess } from '../dataLayer/todosAcess'
-import { AttachmentUtils } from '../helpers/attachmentUtils';
+//import { AttachmentUtils } from '../helpers/attachmentUtils';
 import { TodoItem } from '../models/TodoItem'
 import { CreateTodoRequest } from '../requests/CreateTodoRequest'
 import { UpdateTodoRequest } from '../requests/UpdateTodoRequest'
 import { createLogger } from '../utils/logger'
 import * as uuid from 'uuid'
-//import * as AWS from 'aws-sdk';
+import * as AWS from 'aws-sdk';
 //import * as createError from 'http-errors'
 //import { stringify } from 'querystring';
 import  {TodoUpdate}  from '../models/TodoUpdate'
 // TODO: Implement businessLogic
 const todosAccess = new TodosAccess()
 const logger = createLogger('todos')
-const attachmentUtils = new AttachmentUtils()
+//const attachmentUtils = new AttachmentUtils()
 
 
 export async function getAllTodos(userId: string): Promise<TodoItem[]> {
@@ -86,30 +86,30 @@ export async function getTodosForUser(userId: string): Promise<TodoItem[]> {
   }
 
   //attachmentPresignedUrl
-export async function createAttachmentPresignedUrl(
-  todoId: string,
-  userId: string
-  ) : Promise<string>{
-logger.info('Attachment function created',userId,todoId)
-return attachmentUtils.getUploadUrl(todoId)
+// export async function createAttachmentPresignedUrl(
+//   todoId: string,
+//   userId: string
+//   ) : Promise<string>{
+// logger.info('Attachment function created',userId,todoId)
+// return attachmentUtils.getUploadUrl(todoId)
 
-}
-
-//   export async function generateUploadUrl(
-//     todoId:string,
-//     userId:string
-// ):Promise<string>{
-//  //const userId
-//   const bucketName=process.env.S3_BUCKET_NAME;
-//   const urlExpiration=3000;
-//   const s3= new AWS.S3({signatureVersion:'v4'})
-//   const signedUrl=s3.getSignedUrl('putObject',{
-//     Bucket: bucketName,
-//     Key: todoId, 
-//     Expires: urlExpiration
-//   });
-//   await todosAccess.ImgUrl(todoId,userId,bucketName);
-//   return signedUrl
 // }
+
+  export async function generateUploadUrl(
+    todoId:string,
+    userId:string
+):Promise<string>{
+ //const userId
+  const bucketName=process.env.ATTACHMENT_S3_BUCKET;
+  const urlExpiration=3000;
+  const s3= new AWS.S3({signatureVersion:'v4'})
+  const signedUrl=s3.getSignedUrl('putObject',{
+    Bucket: bucketName,
+    Key: todoId, 
+    Expires: urlExpiration
+  });
+  await todosAccess.imgUrl(todoId,userId,bucketName);
+  return signedUrl
+}
 
 
