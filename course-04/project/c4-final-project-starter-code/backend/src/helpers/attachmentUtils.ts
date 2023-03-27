@@ -11,12 +11,12 @@ const urlExpiration = 3000
 export class AttachmentUtils{
    constructor(
         private readonly s3 =new XAWS.S3({signatureVersion: 'v4'}),
-        private readonly bucketName=s3BucketName,
+        private readonly bucketName= s3BucketName
        // private readonly urlExpiration = process.env.SIGNED_URL_EXPIRATION
 
        ){}
       getAttachmentUrl(todoId: string){
-            return `https://${this.bucketName}.s3.amazonaws.com/${todoId}`
+            return `https://${this.bucketName}.s3amazonaws.com/${todoId}`
                  
         } 
       getUploadUrl(todoId: string): string{

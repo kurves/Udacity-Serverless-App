@@ -33,7 +33,7 @@ export async function getTodosForUser(userId: string): Promise<TodoItem[]> {
     const todoId = uuid.v4()
     const createdAt= new Date().toISOString()
     //const attachUrl = attachmentUtils.getAttachmentUrl(todoId)
-    const newItem: TodoItem = {
+    const newItem = {
       todoId,
       userId,
       createdAt,
